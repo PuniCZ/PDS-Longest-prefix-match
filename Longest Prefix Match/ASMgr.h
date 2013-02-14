@@ -6,6 +6,8 @@
 #include <fstream>
 #include <stdint.h>
 
+#include "IPv4Trie.h"
+
 
 
 using namespace std;
@@ -38,7 +40,7 @@ public:
     ASMgr(void);
     ~ASMgr();
 
-    bool Load(string sourceFile);
+    bool Load(string sourceFile, IPv4Trie& tree);
 
 };
 

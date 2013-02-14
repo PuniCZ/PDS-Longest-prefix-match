@@ -9,7 +9,7 @@ ASMgr::~ASMgr(void)
 {
 }
 
-bool ASMgr::Load(string sourceFile)
+bool ASMgr::Load(string sourceFile, IPv4Trie& tree)
 {
     ifstream file(sourceFile);
 
@@ -28,9 +28,11 @@ bool ASMgr::Load(string sourceFile)
 
         sscanf_s(line.c_str(), "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId);
 
-        ASRecord(addr, prefix, asId);
+        //ASRecord(addr, prefix, asId);
 
-        cout << line << endl;
+        tree.AddAddress(addr, prefix, asId);
+
+        //cout << line << endl;
     }
 
     file.close();
