@@ -2,37 +2,18 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <stdint.h>
 
-#include "IPv4Trie.h"
 
+#include "IPv4Trie.h"
 
 
 using namespace std;
 
-
-class ASRecord
-{
-public:
-    ASRecord(int address[4], int prefix, int asId)
-        :addr_v4(0)
-    {
-        int shift = 24;      
-        for (int i = 0; i < 4; i++, shift -= 8)
-        {
-            addr_v4 |= address[i] << shift ;
-        }
-
-        addr_v4 &= (0xffffffff << (32 - prefix));
-    }
-
-private:
-    int32_t addr_v4;
-    int64_t addr_v6[2];
-
-};
+vector<string> split(const string& s, const string& delim, const bool keep_empty = true);
 
 class ASMgr
 {
@@ -41,6 +22,12 @@ public:
     ~ASMgr();
 
     bool Load(string sourceFile, IPv4Trie& tree);
+
+    static void StringToIPv6(string& str, int addr6[8], int &prefix, int &asId);
+
+private:
+
+    IPv4Trie ipv4Trie;
 
 };
 
