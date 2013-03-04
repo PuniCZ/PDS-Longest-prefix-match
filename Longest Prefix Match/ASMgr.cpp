@@ -102,29 +102,51 @@ void ASMgr::StringToIPv6(string& str, int addr6[8], int &prefix, int &asId)
         i++;
         ii++;
     }
+
     if (state == 2)
     {
         //parse AS id
         buff[ii] = 0;
         sscanf(buff, "%d %d", &prefix, &asId);
+    }
 
-        //fill address missing parts
-        int ii=0;
-        for (int i = byteCounter; i < 8; i++)
+
+    if (state < 2)
+    {
+        if (ii != 0)
         {
-            if (i < 8 - byteCounter2)
+            buff[ii] = 0;
+                            
+            if (state == 0)
             {
-                addr6[i] = 0;
+                sscanf(buff, "%x", &addr6[byteCounter]);
+                byteCounter++;
             }
             else
             {
-                addr6[i] = addr6tmp[ii++];
+                sscanf(buff, "%x", &addr6tmp[byteCounter2]);
+                byteCounter2++;
             }
         }
     }
+    
+    //fill address missing parts
+    ii=0;
+    for (int i = byteCounter; i < 8; i++)
+    {
+        if (i < 8 - byteCounter2)
+        {
+            addr6[i] = 0;
+        }
+        else
+        {
+            addr6[i] = addr6tmp[ii++];
+        }
+    }
+    
 }
 
-bool ASMgr::Load(string sourceFile, IPv4Trie& tree)
+bool ASMgr::Load(string sourceFile)
 {
     ifstream file(sourceFile);
 
@@ -145,7 +167,7 @@ bool ASMgr::Load(string sourceFile, IPv4Trie& tree)
         if (sscanf(line.c_str(), "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId) == 6)
         {
             //ipv4
-            tree.AddAddress(addr, prefix, asId);
+            ipv4Trie.AddAddress(addr, prefix, asId);
         }
         else
         {
@@ -153,7 +175,7 @@ bool ASMgr::Load(string sourceFile, IPv4Trie& tree)
             StringToIPv6(line, addr6, prefix, asId);
 
             //add to tree
-            vector<string> parts = split(line, "::");
+            ipv6Trie.AddAddress(addr6, prefix, asId);
         }
 
     }
@@ -161,4 +183,25 @@ bool ASMgr::Load(string sourceFile, IPv4Trie& tree)
     file.close();
 
     return true;
+}
+
+int ASMgr::Find(string address)
+{
+    int addr[4] = {-1, -1, -1, -1};
+    int addr6[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+
+    if (sscanf(address.c_str(), "%d.%d.%d.%d", &addr[0], &addr[1], &addr[2], &addr[3]) == 4)
+        {
+            //ipv4
+            return ipv4Trie.FindAs(addr);
+        }
+        else
+        {
+            return -1;
+            //ipv6
+            StringToIPv6(address, addr6);
+
+            //add to tree
+            return ipv6Trie.FindAs(addr6);
+        }
 }

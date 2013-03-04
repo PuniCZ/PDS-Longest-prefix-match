@@ -4,3 +4,7 @@ Debug
 /*.suo
 
 /ipch
+/Release
+
+/Longest Prefix Match/out.txt
+/Longest Prefix Match/Release

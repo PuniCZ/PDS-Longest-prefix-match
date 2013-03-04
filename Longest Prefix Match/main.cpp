@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <csignal>
+#include <time.h>
 
 #include "ASMgr.h"
 #include "IPv4Trie.h"
@@ -27,14 +28,32 @@ int main(int argc, char **argv) {
     {
         cout << "Bad params";
     }
-
-    cout << fileName;
-
+    
     ASMgr asMgr;
     IPv4Trie trie;
 
-    asMgr.Load(fileName, trie);
+    cout << "Loading..." << endl;
+    int start = clock();
 
+    asMgr.Load(fileName);
+
+    cout << "Loaded in " << (clock() - start) << endl;
+    
+    cout << "Working..." << endl;
+    start = clock();
+    ofstream of;
+    of.open("out.txt");
+    
+    string line;
+    while (cin.good())
+    {
+        getline(cin, line);
+
+        of << asMgr.Find(line) << endl;
+    }
+    of.close();
+
+    cout << "Finished in " << (clock() - start) << endl;
 
     int addr[4] = {-1, -1, -1, -1};
     int prefix = -1;
@@ -82,9 +101,7 @@ int main(int argc, char **argv) {
 
 
 
-
-    getchar();
-
+    _sleep(10000);
 }
 
 
