@@ -1,3 +1,12 @@
+/*
+ ============================================================================
+ Project     : Longest-prefix match
+ Predmet     : PDS - Prenos dat, pocitacove site a protokoly
+ File        : IPv4Trie.h
+ Author      : Filip Zapletal (xzaple27@stud.fit.vutbr.cz)
+ ============================================================================
+ */
+
 #pragma once
 
 #include <stdint.h>
@@ -23,8 +32,8 @@ public:
                 Childs[i] = NULL;
         }
 
-        Node(int asId)
-            :AsId(asId)
+        Node(int asId, int prefix)
+            :AsId(asId), AsPrefix(prefix)
         {
             for (int i = 0; i < 4; i++)
                 Childs[i] = NULL;
@@ -36,9 +45,9 @@ public:
                 delete Childs[i];
         }
 
-        inline Node* AddChild(int value, int asId)
+        inline Node* AddChild(int value, int asId, int asPrefix)
         {
-            return this->Childs[value] = new Node(asId);
+            return this->Childs[value] = new Node(asId, asPrefix);
         }
 
         inline Node* GetChild(int value) 
@@ -48,6 +57,7 @@ public:
 
         Node* Childs[4];
         int AsId;
+        int AsPrefix;
     };
 
     void AddAddress(int address[4], int prefixLen, int asId);

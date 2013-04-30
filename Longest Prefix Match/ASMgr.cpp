@@ -1,26 +1,13 @@
+/*
+ ============================================================================
+ Project     : Longest-prefix match
+ Predmet     : PDS - Prenos dat, pocitacove site a protokoly
+ File        : ASMgr.h
+ Author      : Filip Zapletal (xzaple27@stud.fit.vutbr.cz)
+ ============================================================================
+ */
+
 #include "ASMgr.h"
-
-
-vector<string> split(const string& s, const string& delim, const bool keep_empty) {
-    vector<string> result;
-    if (delim.empty()) {
-        result.push_back(s);
-        return result;
-    }
-    string::const_iterator substart = s.begin(), subend;
-    while (true) {
-        subend = search(substart, s.end(), delim.begin(), delim.end());
-        string temp(substart, subend);
-        if (keep_empty || !temp.empty()) {
-            result.push_back(temp);
-        }
-        if (subend == s.end()) {
-            break;
-        }
-        substart = subend + delim.size();
-    }
-    return result;
-}
 
 
 ASMgr::ASMgr(void)
@@ -148,7 +135,7 @@ void ASMgr::StringToIPv6(string& str, int addr6[8], int &prefix, int &asId)
 
 bool ASMgr::Load(string sourceFile)
 {
-    ifstream file(sourceFile);
+    ifstream file(sourceFile.c_str());
 
     if (!file.is_open())
         return false;
@@ -163,6 +150,8 @@ bool ASMgr::Load(string sourceFile)
     {
         getline(file, line);
         
+        if (line == "")
+            continue;
 
         if (sscanf(line.c_str(), "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId) == 6)
         {
@@ -177,9 +166,7 @@ bool ASMgr::Load(string sourceFile)
             //add to tree
             ipv6Trie.AddAddress(addr6, prefix, asId);
         }
-
     }
-
     file.close();
 
     return true;
@@ -197,11 +184,9 @@ int ASMgr::Find(string address)
         }
         else
         {
-            return -1;
             //ipv6
             StringToIPv6(address, addr6);
-
-            //add to tree
+            
             return ipv6Trie.FindAs(addr6);
         }
 }

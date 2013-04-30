@@ -24,12 +24,18 @@
     <ClCompile Include="IPv4Trie.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IPv6Trie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IPv4Trie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IPv6Trie.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

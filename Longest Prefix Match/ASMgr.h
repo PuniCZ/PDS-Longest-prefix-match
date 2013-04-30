@@ -1,3 +1,12 @@
+/*
+ ============================================================================
+ Project     : Longest-prefix match
+ Predmet     : PDS - Prenos dat, pocitacove site a protokoly
+ File        : ASMgr.h
+ Author      : Filip Zapletal (xzaple27@stud.fit.vutbr.cz)
+ ============================================================================
+ */
+
 #pragma once
 
 #include <vector>
@@ -14,7 +23,7 @@
 
 using namespace std;
 
-vector<string> split(const string& s, const string& delim, const bool keep_empty = true);
+//vector<string> split(const string& s, const string& delim, const bool keep_empty = true);
 
 class ASMgr
 {

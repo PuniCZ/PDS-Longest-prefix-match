@@ -1,18 +1,18 @@
-// Longest Prefix Match.cpp : Defines the entry point for the console application.
-//
-
+/*
+ ============================================================================
+ Project     : Longest-prefix match
+ Predmet     : PDS - Prenos dat, pocitacove site a protokoly
+ File        : main.cpp
+ Author      : Filip Zapletal (xzaple27@stud.fit.vutbr.cz)
+ ============================================================================
+ */
 
 #include <iostream>
-#include <vector>
-#include <list>
-#include <map>
 #include <fstream>
 #include <sstream>
-#include <csignal>
 #include <time.h>
 
 #include "ASMgr.h"
-#include "IPv4Trie.h"
 
 using namespace std;
 
@@ -26,82 +26,49 @@ int main(int argc, char **argv) {
     }
     else
     {
-        cout << "Bad params";
+        cerr << "Bad params" << endl;
+        return -1;
     }
     
     ASMgr asMgr;
-    IPv4Trie trie;
 
-    cout << "Loading..." << endl;
+#ifdef DEBUG
+    cerr << "Loading..." << endl;
     int start = clock();
+#endif
 
-    asMgr.Load(fileName);
+    //load AS definition and build tries
+    if (!asMgr.Load(fileName))
+    {
+        cerr << "Input AS file cannot be loaded." << endl;
+        return -1;
+    }
 
-    cout << "Loaded in " << (clock() - start) << endl;
-    
-    cout << "Working..." << endl;
+#ifdef DEBUG
+    cerr << "Loaded in " << (clock() - start) << endl;    
+    cerr << "Working..." << endl;
     start = clock();
-    ofstream of;
-    of.open("out.txt");
-    
+#endif
+
+    //read input data form stdin
     string line;
     while (cin.good())
     {
         getline(cin, line);
-
-        of << asMgr.Find(line) << endl;
+        if (line != "")
+        {
+            int result = asMgr.Find(line);
+            
+            if (result == -1)
+                cout << "-" << endl;
+            else
+                cout << result << endl;
+        }
     }
-    of.close();
 
-    cout << "Finished in " << (clock() - start) << endl;
-
-    int addr[4] = {-1, -1, -1, -1};
-    int prefix = -1;
-    int asId = -1;
-
-
-    sscanf("88.0.0.0/8 88", "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId); trie.AddAddress(addr, prefix, asId);
-    sscanf("88.0.0.1", "%d.%d.%d.%d", &addr[0], &addr[1], &addr[2], &addr[3]);
-    asId = trie.FindAs(addr);
-
-    sscanf("2001:1200::/32 16531", "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId); trie.AddAddress(addr, prefix, asId);
-    
-    
-
-
-    sscanf("1.0.0.0/9 108", "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId); trie.AddAddress(addr, prefix, asId);
-    sscanf("1.64.0.0/16 6416", "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId); trie.AddAddress(addr, prefix, asId);
-    
-    sscanf("1.0.0.1", "%d.%d.%d.%d", &addr[0], &addr[1], &addr[2], &addr[3]);
-    asId = trie.FindAs(addr);
-
-    sscanf("1.78.0.1", "%d.%d.%d.%d", &addr[0], &addr[1], &addr[2], &addr[3]);
-    asId = trie.FindAs(addr);
-
-
-
-    sscanf("192.168.0.0/17 1", "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId); trie.AddAddress(addr, prefix, asId);
-    sscanf("192.168.64.0/24 64", "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId); trie.AddAddress(addr, prefix, asId);
-    sscanf("192.168.128.0/24 128", "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId); trie.AddAddress(addr, prefix, asId);
-    sscanf("192.168.196.0/24 196", "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId); trie.AddAddress(addr, prefix, asId);
-    sscanf("192.168.224.0/24 224", "%d.%d.%d.%d/%d %d", &addr[0], &addr[1], &addr[2], &addr[3], &prefix, &asId); trie.AddAddress(addr, prefix, asId);
-
-
-    sscanf("192.168.0.1", "%d.%d.%d.%d", &addr[0], &addr[1], &addr[2], &addr[3]);
-    asId = trie.FindAs(addr);
-
-    sscanf("192.168.64.1", "%d.%d.%d.%d", &addr[0], &addr[1], &addr[2], &addr[3]);
-    asId = trie.FindAs(addr);
-
-    sscanf("192.168.78.1", "%d.%d.%d.%d", &addr[0], &addr[1], &addr[2], &addr[3]);
-    asId = trie.FindAs(addr);
-
-    sscanf("192.168.247.1", "%d.%d.%d.%d", &addr[0], &addr[1], &addr[2], &addr[3]);
-    asId = trie.FindAs(addr);
-
-
-
-    _sleep(10000);
+#ifdef DEBUG
+    cerr << "Finished in " << (clock() - start) << endl;  
+#endif
 }
 
 
